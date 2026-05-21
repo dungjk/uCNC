@@ -986,7 +986,7 @@ void cnc_exec_rt_commands(void)
 		if (update_tools)
 		{
 			itp_update();
-			if (g_settings.tool_mode == UNDEF_MODE)
+			if ((g_settings.tool_mode == UNDEF_MODE) || (itp_is_empty() && planner_buffer_is_empty()))
 			{
 				itp_sync_spindle();
 			}
