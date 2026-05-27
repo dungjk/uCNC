@@ -1100,6 +1100,8 @@ bool cnc_check_interlocking(void)
 			cnc_alarm(EXEC_ALARM_HOMING_FAIL_DOOR);
 			return false;
 		}
+		
+		itp_stop_tools();
 	}
 #endif
 
