@@ -232,13 +232,6 @@ void tool_set_speed(int16_t value)
 	tool_current_speed = value;
 	if (tool_current.set_speed)
 	{
-#if ASSERT_PIN(SAFETY_DOOR)
-		// the safety door condition is active
-		if (cnc_get_exec_state(EXEC_DOOR))
-		{
-			value = 0;
-		}
-#endif
 		tool_current.set_speed(value);
 	}
 #endif
@@ -283,13 +276,6 @@ void tool_set_coolant(uint8_t value)
 #if TOOL_COUNT > 0
 	if (tool_current.set_coolant)
 	{
-#if ASSERT_PIN(SAFETY_DOOR)
-		// the safety door condition is active
-		if (cnc_get_exec_state(EXEC_DOOR))
-		{
-			value = 0;
-		}
-#endif
 		tool_current.set_coolant(value);
 	}
 #endif
