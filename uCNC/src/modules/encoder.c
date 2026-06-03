@@ -574,29 +574,36 @@ SOFTSPI(enc7, ENC7_FREQ, 0, UNDEF_PIN, ENC7_DIR, ENC7_PULSE);
 
 #if ENCODERS > 0 && (defined(ENC0_INDEX) || ENC0_VIRTUAL_INDEX)
 CREATE_HOOK(enc0_index);
+#define ENC0_INDEX_EVENT() HOOK_INVOKE(enc0_index)
 #endif
 #if ENCODERS > 1 && (defined(ENC1_INDEX) || ENC1_VIRTUAL_INDEX)
 CREATE_HOOK(enc1_index);
+#define ENC1_INDEX_EVENT() HOOK_INVOKE(enc1_index)
 #endif
 #if ENCODERS > 2 && (defined(ENC2_INDEX) || ENC2_VIRTUAL_INDEX)
 CREATE_HOOK(enc2_index);
+#define ENC2_INDEX_EVENT() HOOK_INVOKE(enc2_index)
 #endif
 #if ENCODERS > 3 && (defined(ENC3_INDEX) || ENC3_VIRTUAL_INDEX)
 CREATE_HOOK(enc3_index);
+#define ENC3_INDEX_EVENT() HOOK_INVOKE(enc3_index)
 #endif
 #if ENCODERS > 4 && (defined(ENC4_INDEX) || ENC4_VIRTUAL_INDEX)
 CREATE_HOOK(enc4_index);
+#define ENC4_INDEX_EVENT() HOOK_INVOKE(enc4_index)
 #endif
 #if ENCODERS > 5 && (defined(ENC5_INDEX) || ENC5_VIRTUAL_INDEX)
 CREATE_HOOK(enc5_index);
+#define ENC5_INDEX_EVENT() HOOK_INVOKE(enc5_index)
 #endif
 #if ENCODERS > 6 && (defined(ENC6_INDEX) || ENC6_VIRTUAL_INDEX)
 CREATE_HOOK(enc6_index);
+#define ENC6_INDEX_EVENT() HOOK_INVOKE(enc6_index)
 #endif
 #if ENCODERS > 7 && (defined(ENC7_INDEX) || ENC7_VIRTUAL_INDEX)
 CREATE_HOOK(enc7_index);
+#define ENC7_INDEX_EVENT() HOOK_INVOKE(enc7_index)
 #endif
-
 
 void __attribute__((weak)) enc0_pulse(void) {}
 void __attribute__((weak)) enc1_pulse(void) {}
@@ -607,12 +614,40 @@ void __attribute__((weak)) enc5_pulse(void) {}
 void __attribute__((weak)) enc6_pulse(void) {}
 void __attribute__((weak)) enc7_pulse(void) {}
 
+#ifndef ENC0_PULSE_EVENT
+#define ENC0_PULSE_EVENT() enc0_pulse()
+#endif
+#ifndef ENC1_PULSE_EVENT
+#define ENC1_PULSE_EVENT() enc1_pulse()
+#endif
+#ifndef ENC2_PULSE_EVENT
+#define ENC2_PULSE_EVENT() enc2_pulse()
+#endif
+#ifndef ENC3_PULSE_EVENT
+#define ENC3_PULSE_EVENT() enc3_pulse()
+#endif
+#ifndef ENC4_PULSE_EVENT
+#define ENC4_PULSE_EVENT() enc4_pulse()
+#endif
+#ifndef ENC5_PULSE_EVENT
+#define ENC5_PULSE_EVENT() enc5_pulse()
+#endif
+#ifndef ENC6_PULSE_EVENT
+#define ENC6_PULSE_EVENT() enc6_pulse()
+#endif
+#ifndef ENC7_PULSE_EVENT
+#define ENC7_PULSE_EVENT() enc7_pulse()
+#endif
+
+#define ENC_PULSE_EVENT(X) X##_PULSE_EVENT()
+#define ENC_INDEX_EVENT(X) X##_INDEX_EVENT()
+
 /**
  * Additional read functions for other types of encoders can be added later
  * For now support for the MT6701 is added
  */
 static int32_t encoder_last_read[ENCODERS] __attribute__((unused));
-//static uint16_t encoder_last_read[ENCODERS] __attribute__((unused));
+// static uint16_t encoder_last_read[ENCODERS] __attribute__((unused));
 static int32_t encoder_rpm_accum[ENCODERS] __attribute__((unused));
 static uint32_t encoder_rpm_tstamp[ENCODERS] __attribute__((unused));
 static uint8_t encoder_index_reset_done[ENCODERS] __attribute__((unused));
@@ -1235,6 +1270,72 @@ bool encoder_get_index_debug_line(uint8_t i, char *line, uint32_t line_len, uint
 	return true;
 }
 
+#if ENC0_VIRTUAL_INDEX
+#undef ENC0_INDEX_EVENT
+#ifdef ENC0_INDEX_RESET_POSITION
+#define ENC0_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC0, ENC0_INDEX_RESET_POSITION);encoder_record_index_reference(ENC0, encoder_get_position(ENC0))
+#else
+#define ENC0_INDEX_EVENT() encoder_record_index_reference(ENC0, encoder_get_position(ENC0))
+#endif
+#endif
+#if ENC1_VIRTUAL_INDEX
+#undef ENC1_INDEX_EVENT
+#ifdef ENC1_INDEX_RESET_POSITION
+#define ENC1_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC1, ENC1_INDEX_RESET_POSITION);encoder_record_index_reference(ENC1, encoder_get_position(ENC1))
+#else
+#define ENC1_INDEX_EVENT() encoder_record_index_reference(ENC1, encoder_get_position(ENC1))
+#endif
+#endif
+#if ENC2_VIRTUAL_INDEX
+#undef ENC2_INDEX_EVENT
+#ifdef ENC2_INDEX_RESET_POSITION
+#define ENC2_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC2, ENC2_INDEX_RESET_POSITION);encoder_record_index_reference(ENC2, encoder_get_position(ENC2))
+#else
+#define ENC2_INDEX_EVENT() encoder_record_index_reference(ENC2, encoder_get_position(ENC2))
+#endif
+#endif
+#if ENC3_VIRTUAL_INDEX
+#undef ENC3_INDEX_EVENT
+#ifdef ENC3_INDEX_RESET_POSITION
+#define ENC3_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC3, ENC3_INDEX_RESET_POSITION);encoder_record_index_reference(ENC3, encoder_get_position(ENC3))
+#else
+#define ENC3_INDEX_EVENT() encoder_record_index_reference(ENC3, encoder_get_position(ENC3))
+#endif
+#endif
+#if ENC4_VIRTUAL_INDEX
+#undef ENC4_INDEX_EVENT
+#ifdef ENC4_INDEX_RESET_POSITION
+#define ENC4_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC4, ENC4_INDEX_RESET_POSITION);encoder_record_index_reference(ENC4, encoder_get_position(ENC4))
+#else
+#define ENC4_INDEX_EVENT() encoder_record_index_reference(ENC4, encoder_get_position(ENC4))
+#endif
+#endif
+#if ENC5_VIRTUAL_INDEX
+#undef ENC5_INDEX_EVENT
+#ifdef ENC5_INDEX_RESET_POSITION
+#define ENC5_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC5, ENC5_INDEX_RESET_POSITION);encoder_record_index_reference(ENC5, encoder_get_position(ENC5))
+#else
+#define ENC5_INDEX_EVENT() encoder_record_index_reference(ENC5, encoder_get_position(ENC5))
+#endif
+#endif
+#if ENC6_VIRTUAL_INDEX
+#undef ENC6_INDEX_EVENT
+#ifdef ENC6_INDEX_RESET_POSITION
+#define ENC6_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC6, ENC6_INDEX_RESET_POSITION);encoder_record_index_reference(ENC6, encoder_get_position(ENC6))
+#else
+#define ENC6_INDEX_EVENT() encoder_record_index_reference(ENC6, encoder_get_position(ENC6))
+#endif
+#endif
+#if ENC7_VIRTUAL_INDEX
+#undef ENC7_INDEX_EVENT
+#ifdef ENC7_INDEX_RESET_POSITION
+#define ENC7_INDEX_EVENT() encoder_set_position_from_current_read_once(ENC7, ENC7_INDEX_RESET_POSITION);encoder_record_index_reference(ENC7, encoder_get_position(ENC7))
+#else
+#define ENC7_INDEX_EVENT() encoder_record_index_reference(ENC7, encoder_get_position(ENC7))
+#endif
+#endif
+
+
 #else
 
 void encoder_invoke_index(uint8_t i)
@@ -1390,20 +1491,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC0_INDEX) && !ENC0_VIRTUAL_INDEX_ONLY && (ENC0_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC0_INDEX))
 		{
-#ifdef ENC0_INDEX_RESET_POSITION
-			encoder_set_position_from_current_read_once(ENC0, ENC0_INDEX_RESET_POSITION);
-#endif
-			encoder_record_index_reference(ENC0, encoder_get_position(ENC0));
+			ENC0_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC0_INDEX) && !ENC0_VIRTUAL_INDEX_ONLY && (ENC0_INDEX_IO_MASK != 0))
 	if ((diff & ENC0_INDEX_IO_MASK))
 	{
-#ifdef ENC0_INDEX_RESET_POSITION
-		encoder_set_position_from_current_read_once(ENC0, ENC0_INDEX_RESET_POSITION);
-#endif
-		encoder_record_index_reference(ENC0, encoder_get_position(ENC0));
+		ENC0_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1421,14 +1516,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC1_INDEX) && !ENC1_VIRTUAL_INDEX_ONLY && (ENC1_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC1_INDEX))
 		{
-			encoder_record_index_reference(ENC1, encoder_get_position(ENC1));
+			ENC1_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC1_INDEX) && !ENC1_VIRTUAL_INDEX_ONLY && (ENC1_INDEX_IO_MASK != 0))
 	if ((diff & ENC1_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC1, encoder_get_position(ENC1));
+		ENC1_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1446,14 +1541,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC2_INDEX) && !ENC2_VIRTUAL_INDEX_ONLY && (ENC2_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC2_INDEX))
 		{
-			encoder_record_index_reference(ENC2, encoder_get_position(ENC2));
+			ENC2_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC2_INDEX) && !ENC2_VIRTUAL_INDEX_ONLY && (ENC2_INDEX_IO_MASK != 0))
 	if ((diff & ENC2_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC2, encoder_get_position(ENC2));
+		ENC2_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1471,14 +1566,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC3_INDEX) && !ENC3_VIRTUAL_INDEX_ONLY && (ENC3_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC3_INDEX))
 		{
-			encoder_record_index_reference(ENC3, encoder_get_position(ENC3));
+			ENC3_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC3_INDEX) && !ENC3_VIRTUAL_INDEX_ONLY && (ENC3_INDEX_IO_MASK != 0))
 	if ((diff & ENC3_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC3, encoder_get_position(ENC3));
+		ENC3_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1496,14 +1591,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC4_INDEX) && !ENC4_VIRTUAL_INDEX_ONLY && (ENC4_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC4_INDEX))
 		{
-			encoder_record_index_reference(ENC4, encoder_get_position(ENC4));
+			ENC4_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC4_INDEX) && !ENC4_VIRTUAL_INDEX_ONLY && (ENC4_INDEX_IO_MASK != 0))
 	if ((diff & ENC4_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC4, encoder_get_position(ENC4));
+		ENC4_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1521,14 +1616,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC5_INDEX) && !ENC5_VIRTUAL_INDEX_ONLY && (ENC5_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC5_INDEX))
 		{
-			encoder_record_index_reference(ENC5, encoder_get_position(ENC5));
+			ENC5_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC5_INDEX) && !ENC5_VIRTUAL_INDEX_ONLY && (ENC5_INDEX_IO_MASK != 0))
 	if ((diff & ENC5_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC5, encoder_get_position(ENC5));
+		ENC5_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1546,14 +1641,14 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC6_INDEX) && !ENC6_VIRTUAL_INDEX_ONLY && (ENC6_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC6_INDEX))
 		{
-			encoder_record_index_reference(ENC6, encoder_get_position(ENC6));
+			ENC6_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC6_INDEX) && !ENC6_VIRTUAL_INDEX_ONLY && (ENC6_INDEX_IO_MASK != 0))
 	if ((diff & ENC6_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC6, encoder_get_position(ENC6));
+		ENC6_INDEX_EVENT();
 	}
 #endif
 #endif
@@ -1571,18 +1666,17 @@ void encoders_update(uint8_t pulse, uint8_t diff)
 #if (defined(ENC7_INDEX) && !ENC7_VIRTUAL_INDEX_ONLY && (ENC7_INDEX_IO_MASK == 0))
 		if (io_get_input(ENC7_INDEX))
 		{
-			encoder_record_index_reference(ENC7, encoder_get_position(ENC7));
+			ENC7_INDEX_EVENT();
 		}
 #endif
 	}
 #if (defined(ENC7_INDEX) && !ENC7_VIRTUAL_INDEX_ONLY && (ENC7_INDEX_IO_MASK != 0))
 	if ((diff & ENC7_INDEX_IO_MASK))
 	{
-		encoder_record_index_reference(ENC7, encoder_get_position(ENC7));
+		ENC7_INDEX_EVENT();
 	}
 #endif
 #endif
-
 }
 #else
 void encoders_update(uint8_t pulse, uint8_t diff) {}
